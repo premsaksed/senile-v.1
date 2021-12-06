@@ -45,69 +45,28 @@
                             </a>
 
                         </li>
-
-
-
-
-                        <li class='sidebar-title'>รายงานผล</li>
-
-
-                        <li class="sidebar-item  has-sub">
-                            <a href="#" class='sidebar-link'>
-                                <i data-feather="trending-up" width="20"></i>
-                                <span>รายงานผล</span>
+                        <li class="sidebar-item  ">
+                            <a href="table.php" class='sidebar-link'>
+                                <i data-feather="file-text" width="20"></i>
+                                <span>ค้นหาตามหัวข้อ</span>
                             </a>
 
-                            <ul class="submenu ">
-
-                                <!-- <li>
-                                    <a href="height.php">ความสูง</a>
-                                </li> -->
-
-                                <li>
-                                    <a href="result_Arm.php">งอแขนพับข้อศอก</a>
-                                </li>
-                                <li>
-                                    <a href="result_Back_scratch.php">การเอื้อมแขนแตะมือด้านหลัง</a>
-                                </li>
-
-                                <li>
-                                    <a href="result_BMI.php">ดัชนีมวลกาย</a>
-                                </li>
-                                <li>
-                                    <a href="result_Chair_stand.php">ลุกยืนจากเก้าอี้</a>
-                                </li>
-
-                                <li>
-                                    <a href="result_heart.php">อัตราการเต้นของหัวใจ</a>
-                                </li>
-                                <li>
-                                    <a href="result_Sit.php">นั่งเก้าอี้ยื่นแขนแตะปลายเท้า</a>
-                                </li>
-
-                                <li>
-                                    <a href="result_Stepinplace.php">เดินย้ำ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ก้าว2นาที</a>
-                                </li>
-                                <li>
-                                    <a href="result_up_and_go.php">การลุกเดินจากเก้าอี้ไปและกลับ</a>
-                                </li>
-
-                                <li>
-                                    <a href="result_waistline.php">เส้นรอบเอว</a>
-                                </li>
-                                
-
-                                <li>
-                                    <a href="result_walk.php">เดิน 6 นาที</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="ui-chart-apexchart.php">ความดันโลหิด</a>
-                                </li>
-
-                            </ul>
+                        </li>
+                        <li class="sidebar-item  ">
+                            <a href="tableselect.php" class='sidebar-link'>
+                                <i data-feather="file-text" width="20"></i>
+                                <span>ค้นหาตามที่อยู่</span>
+                            </a>
 
                         </li>
+
+
+
+
+                       
+
+
+                        
 
 
 

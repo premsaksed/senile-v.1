@@ -131,7 +131,7 @@ include_once '../connection.php';
                                 // output data of each row
                         ?>
                                 <tr>
-                                    <td><?php echo $row['ID']; ?></td>
+                                    <td><?php $number += 1; echo $number;  ?></td>
                                     <td><?php echo $row['fname']; ?></td>
                                     <td><?php echo $row['age']; ?></td>
                                     <td><?php echo $row['phone']; ?></td>

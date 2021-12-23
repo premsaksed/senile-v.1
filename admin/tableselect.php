@@ -25,6 +25,8 @@ include_once '../connection.php';
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>รายการ</h3>
+
+
                 <br><br>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
@@ -39,49 +41,68 @@ include_once '../connection.php';
     </div>
 
     <section class="section">
-        <div class="card">
+        <!-- <div class="card">
             <div class="card-header">
                 <form action="" class="form" method="post">
                     <div class="row">
-                    <?php
-                                    include('connect.php');
-                                    $sql = "SELECT * FROM provinces";
-                                    $query = mysqli_query($conn, $sql);
-                                    ?>
-                                    <div class="col-md-2 col-12">
-                                        <label for="province">จังหวัด</label>
-                                        <select name="province_id" id="province" class="form-control">
-                                            <option value="">เลือกจังหวัด</option>
-                                            <?php while ($result = mysqli_fetch_assoc($query)) : ?>
-                                                <option value="<?= $result['id'] ?>"><?= $result['name_th'] ?></option>
-                                            <?php endwhile; ?>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2 col-12">
-                                        <label for="amphure">อำเภอ</label>
-                                        <select name="amphure_id" id="amphure" class="form-control">
-                                            <option value="">เลือกอำเภอ</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2 col-12">
-                                        <label for="district">ตำบล</label>
-                                        <select name="district_id" id="district" class="form-control">
-                                            <option value="">เลือกตำบล</option>
-                                        </select>
-                                    </div>
+                        <?php
+                        include('connect.php');
+                        $sql = "SELECT * FROM provinces";
+                        $query = mysqli_query($conn, $sql);
+                        ?>
+                        <div class="col-md-2 col-12">
+                            <label for="province">จังหวัด</label>
+                            <select name="province_id" id="province" class="form-control">
+                                <option value="">เลือกจังหวัด</option>
+                                <?php while ($result = mysqli_fetch_assoc($query)) : ?>
+                                    <option value="<?= $result['id'] ?>"><?= $result['name_th'] ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-2 col-12">
+                            <label for="amphure">อำเภอ</label>
+                            <select name="amphure_id" id="amphure" class="form-control">
+                                <option value="">เลือกอำเภอ</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 col-12">
+                            <label for="district">ตำบล</label>
+                            <select name="district_id" id="district" class="form-control">
+                                <option value="">เลือกตำบล</option>
+                            </select>
+                        </div>
                         <div class="col-md-2 mt-3 col-12">
                             <button type="submit" class="btn btn-primary me-1 mb-1">ค้นหา</button>
-                            <!-- <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button> -->
+                           <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button> 
                         </div>
                     </div>
                 </form>
-            </div>
+            </div>  -->
+            <script>
+		function printDiv(divName){
+			var printContents = document.getElementById(divName).innerHTML;
+			var originalContents = document.body.innerHTML;
 
+			document.body.innerHTML = printContents;
 
-            <div class="card-body">
-                <table class='table table-striped' id="">
-                    <thead>
-                        <tr>
+			window.print();
+
+			document.body.innerHTML = originalContents;
+
+		}
+	</script>
+            <div> </div><button  onclick="window.print()">Print this page</button>
+            <section class="section">
+                    <div   class="card">
+                        <div class="card-header">
+                            รายการ
+                            <div align="center"> </div>
+                        </div> 
+                        
+                        <div id='printMe'class="card-body">
+                            <table  class='table table-striped' id="table1">
+                                <thead>
+                                    <tr>
                             <th>#</th>
                             <th>ชื่อ</th>
                             <th>อายุ</th>
@@ -98,14 +119,23 @@ include_once '../connection.php';
                         $amphure_id = $_POST['amphure_id'];
                         $district_id = $_POST['district_id'];
 
-                                                // echo $province_id.' '.$amphure_id.' '.$district_id;
+                        // echo $province_id.' '.$amphure_id.' '.$district_id;
                         $sql = "SELECT Records.ID,Records.fname,Records.address,Records.age,Records.gender
                         ,Records.phone,Records.NO,amphures.name_th as amp ,provinces.name_th 
-                        as pro,districts.name_th as dis FROM Records 
-                        INNER JOIN amphures ON Records.amperes = amphures.id 
-                        INNER JOIN provinces ON Records.province = provinces.id 
-                        INNER JOIN districts ON Records.district= districts.id 
-                        WHERE `district` = '$district_id' && `amperes` = '$amphure_id' && `province` = '$province_id';";
+                                                as pro,districts.name_th as dis FROM Records 
+                                                INNER JOIN amphures ON Records.amperes = amphures.id 
+                                                INNER JOIN provinces ON Records.province = provinces.id 
+                                                INNER JOIN districts ON Records.district= districts.id 
+                                                WHERE 
+                        `result_blood_pressure`  >=2 and `result_heart` >=2 and `result_waistline` >=2 and `result_walk` >=2 and `result_Stepinplace` >=2 and 
+                        `result_Chair_stand` >=2 and `result_Arm` >=2 and `result_Sit` >=2 and `result_Back_scratch` >=2 and `result_up_and_go` >=2  ";
+                        // $sql = "SELECT Records.ID,Records.fname,Records.address,Records.age,Records.gender
+                        // ,Records.phone,Records.NO,amphures.name_th as amp ,provinces.name_th 
+                        // as pro,districts.name_th as dis FROM Records 
+                        // INNER JOIN amphures ON Records.amperes = amphures.id 
+                        // INNER JOIN provinces ON Records.province = provinces.id 
+                        // INNER JOIN districts ON Records.district= districts.id 
+                        // WHERE `district` = '$district_id' && `amperes` = '$amphure_id' && `province` = '$province_id';";
                         $result = $con->query($sql);
 
                         if ($result->num_rows > 0) {
@@ -113,7 +143,7 @@ include_once '../connection.php';
                                 // output data of each row
                         ?>
                                 <tr>
-                                    <td><?php echo $row['ID']; ?></td>
+                                    <td><?php $number += 1; echo $number;  ?></td>
                                     <td><?php echo $row['fname']; ?></td>
                                     <td><?php echo $row['age']; ?></td>
                                     <td><?php echo $row['phone']; ?></td>
@@ -133,7 +163,7 @@ include_once '../connection.php';
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> 
 
     </section>
 </div>
@@ -171,3 +201,9 @@ include_once '../connection.php';
 </html>
 <?php
 mysqli_close($conn);
+
+
+
+?>
+
+

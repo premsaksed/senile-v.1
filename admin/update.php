@@ -57,6 +57,7 @@ $sql = "UPDATE `Records` SET `prefix`='$prefix',
 if ($con->query($sql) === TRUE) {
   echo "<script type='text/javascript'>";
   echo "alert('แก้ไขรายการสำเร็จ');";
+
   echo"window.location = 'table-datatable.php'; ";
   echo"</script>";
 } else {

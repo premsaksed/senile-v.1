@@ -1,5 +1,17 @@
 <?php include_once 'head.php'; ?>
 
+<?php
+include_once '../connection.php';
+
+$ID = $_GET['ID'];
+$sql = "SELECT * FROM Records where ID = $ID";
+$result = $con->query($sql);
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+
+?>
+
 <script language="javascript">
     //ความดัน ทดสอบแล้ว
     function fncCal1() {
@@ -1386,31 +1398,44 @@
                     <div class="card-content">
                         <div class="card-body">
                             <form action="insert.php" name="form1" method="post" class="form">
-                                <div class="row">
+                                <input type="hidden" name="ID" value="<?php echo $row['ID'];  ?>"> <div class="row">
                                     <div class="col-md-1 col-12">
                                         <div class="form-group">
                                             <label for="first-name-column">คำนำหน้า</label>
                                             <fieldset class="form-group">
-                                                <select name="prefix" class="form-select" id="basicSelect">
-                                                    <option value="1">นาย</option>
-                                                    <option value="2">นาง</option>
-                                                    <option value="3">นางสาว</option>
-                                                </select>
-                                            </fieldset>
+                                                        <input type="hidden" name="ID" value="<?php echo $row['ID'];  ?>">
+                                                        <select name="prefix" class="form-select" id="basicSelect">
+                                                            <option value="<?php echo $row['prefix'];  ?>" selected ><?php if ($row['prefix'] == 1) {
+                                                                                                                                        echo 'นาย';
+                                                                                                                                    }
+                                                                                                                                    if ($row['prefix'] == 2) {
+                                                                                                                                        echo 'นาง';
+                                                                                                                                    } if ($row['prefix'] == 3)  {
+                                                                                                                                        echo 'นางสาว';
+                                                                                                                                    }  ?></option>
+                                                                                                                                    
+                                                            <option value="1">นาย</option>
+                                                            <option value="2">นาง</option>
+                                                            <option value="3">นางสาว</option>
+                                                        </select>
+                                                    </fieldset>
                                         </div>
                                     </div>
                                     <div class="col-md-5 col-12">
                                         <div class="form-group">
                                             <label for="last-name-column">ชื่อ - นามสกุล</label>
-                                            <input type="text" id="last-name-column" name="fname" class="form-control" placeholder="ชื่อ - นามสกุล" name="lname-column">
-                                        </div>
+                                            <input type="text" id="last-name-column" value="<?php echo $row['fname']; ?>" name="fname" class="form-control" placeholder="ชื่อ - นามสกุล" name="lname-column">
+                                         </div>
                                     </div>
                                     <div class="col-md-1 col-12">
                                         <div class="form-group">
                                             <label for="city-column">เพศ</label>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" value="1" name="gender" id="gender">
-                                                <label for="city-column">ชาย</label>
+                                            <input class="form-check-input" <?php if ($row['gender'] == 1) {
+                                                                                            echo 'checked';
+                                                                                        } else {
+                                                                                        } ?> type="radio" value="1" name="gender" id="gender">
+                                                        <label for="city-column">ชาย</label>
                                             </div>
                                         </div>
                                     </div>
@@ -1418,8 +1443,11 @@
                                         <div class="form-group">
                                             <label for="city-column"></label>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" value="2" name="gender" id="gender">
-                                                <label for="city-column">หญิง</label>
+                                            <input class="form-check-input" type="radio" <?php if ($row['gender'] == 2) {
+                                                                                                            echo 'checked';
+                                                                                                        } else {
+                                                                                                        } ?> value="2" name="gender" id="gender">
+                                                       <label for="city-column">หญิง</label>
                                             </div>
                                         </div>
                                     </div>
@@ -1427,51 +1455,63 @@
                                     <div class="col-md-4 col-12">
                                         <div class="form-group">
                                             <label for="country-floating">อายุ(เต็ม)</label>
-                                            <input type="text" id="country-floating" class="form-control" name="age" placeholder="อายุ(เต็ม)">
-                                        </div>
+                                            <input type="text" id="country-floating" class="form-control" value="<?php echo $row['age']; ?>" name="age" placeholder="อายุ(เต็ม)">
+                                                                                                    </div>
                                     </div>
                                     <div class="col-md-2 col-12">
                                         <div class="form-group">
                                             <label for="company-column">ที่อยู่</label>
-                                            <input type="text" id="company-column" class="form-control" name="address" placeholder="บ้านเลขที่">
+                                            <input type="text" id="company-column" class="form-control" value="<?php echo $row['address']; ?>" name="address" placeholder="บ้านเลขที่">
+
                                         </div>
                                     </div>
-                                    <?php
-                                    include('connect.php');
-                                    $sql = "SELECT * FROM provinces";
-                                    $query = mysqli_query($conn, $sql);
-                                    ?>
+                                    
                                     <div class="col-md-2 col-12">
                                         <label for="province">จังหวัด</label>
                                         <select name="province_id" id="province" class="form-control">
-                                            <option value="">เลือกจังหวัด</option>
-                                            <?php while ($result = mysqli_fetch_assoc($query)) : ?>
-                                                <option value="<?= $result['id'] ?>"><?= $result['name_th'] ?></option>
-                                            <?php endwhile; ?>
-                                        </select>
+                                                    <?php
+                                                    $province = $row['province'];
+                                                    $sql = "SELECT * FROM provinces where id =$province ";
+                                                    $query = mysqli_query($con, $sql);
+                                                    while ($result = mysqli_fetch_assoc($query)) : ?>
+                                                        <option value="<?= $result['id'] ?>"><?= $result['name_th'] ?></option>
+                                                    <?php endwhile; ?>
+                                                </select>
                                     </div>
                                     <div class="col-md-2 col-12">
                                         <label for="amphure">อำเภอ</label>
                                         <select name="amphure_id" id="amphure" class="form-control">
-                                            <option value="">เลือกอำเภอ</option>
-                                        </select>
+                                                    <?php
+                                                    $amphures = $row['amperes'];
+                                                    $sql = "SELECT * FROM amphures where id =$amphures ";
+                                                    $query = mysqli_query($con, $sql);
+                                                    while ($result = mysqli_fetch_assoc($query)) : ?>
+                                                        <option value="<?= $result['id'] ?>"><?= $result['name_th'] ?></option>
+                                                    <?php endwhile; ?>
+                                                </select>
                                     </div>
                                     <div class="col-md-2 col-12">
                                         <label for="district">ตำบล</label>
                                         <select name="district_id" id="district" class="form-control">
-                                            <option value="">เลือกตำบล</option>
-                                        </select>
+                                                    <?php
+                                                    $district = $row['district'];
+                                                    $sql = "SELECT * FROM districts where id =$district ";
+                                                    $query = mysqli_query($con, $sql);
+                                                    while ($result = mysqli_fetch_assoc($query)) : ?>
+                                                        <option value="<?= $result['id'] ?>"><?= $result['name_th'] ?></option>
+                                                         <?php endwhile; ?>
+                                                </select>
                                     </div>
                                     <div class="col-md-2 col-12">
                                         <div class="form-group">
                                             <label for="company-column">เบอร์โทรศัพท์</label>
-                                            <input type="text" id="company-column" class="form-control" name="phone" placeholder="เบอร์โทรศัพท์">
+                                            <input type="text" id="company-column" class="form-control" value="<?php echo $row['phone']; ?>" name="phone" placeholder="เบอร์โทรศัพท์">
                                         </div>
                                     </div>
                                     <div class="col-md-2 col-12">
                                         <div class="form-group">
                                             <label for="company-column">โรคประจำตัว</label>
-                                            <input type="text" id="company-column" class="form-control" name="congenital" placeholder="โรคประจำตัว">
+                                            <input type="text" id="company-column" class="form-control" value="<?php echo $row['congenital']; ?>" name="congenital" placeholder="โรคประจำตัว">
                                         </div>
                                     </div>
                                     <div class="row" id="table-bordered">
@@ -1493,211 +1533,299 @@
                                                         <tbody>
                                                             <tr>
                                                                 <td class="text-bold-500">ความดันโลหิต</td>
-                                                                <td><input type="text" id="company-column" OnKeyUp="fncCal1();" class="form-control" name="blood_pressure" placeholder="ความดันโลหิต"></td>
+                                                                <td><input type="text" id="company-column" OnKeyUp="fncCal1();" value="<?php echo $row['blood_pressure']; ?>" class="form-control" name="blood_pressure" placeholder="ความดันโลหิต"></td>
                                                                 <td class="text-bold-500">มิลลิเมตรปรอท</td>
                                                                 <td>
-                                                                    <p id="blood_pressure"> </p>
-                                                                    <input class="form-check-input" value="1" type="radio" name="result_blood_pressure">
-                                                                    <label for="city-column">ต่ำกว่าปกติ</label>
-                                                                    <input class="form-check-input" value="2" type="radio" name="result_blood_pressure">
-                                                                    <label for="city-column">ปกติ</label>
-                                                                    <input class="form-check-input" value="3" type="radio" name="result_blood_pressure">
-                                                                    <label for="city-column">สูงกว่าปกติ</label>                                                                   
-                                                                </td>
+                                                                            <input class="form-check-input" <?php if ($row['result_blood_pressure'] == 1) {
+                                                                                                                echo 'checked';
+                                                                                                            } else {
+                                                                                                            } ?> value="1" type="radio" name="result_blood_pressure">
+                                                                            <label for="city-column">ปกติ</label>
+                                                                            <input class="form-check-input" <?php if ($row['result_blood_pressure'] == 2) {
+                                                                                                                echo 'checked';
+                                                                                                            } else {
+                                                                                                            } ?> value="2" type="radio" name="result_blood_pressure">
+                                                                            <label for="city-column">เสี่ยง</label>
+                                                                            <input class="form-check-input" <?php if ($row['result_blood_pressure'] == 3) {
+                                                                                                                echo 'checked';
+                                                                                                            } else {
+                                                                                                            } ?> value="3" type="radio" name="result_blood_pressure">
+                                                                            <label for="city-column">สูง</label>
+
+                                                                        </td>
                                                             </tr>
                                                             <tr>
                                                                 <td class="text-bold-500">อัตราการเต้นหัวใจ</td>
-                                                                <td><input type="text" id="company-column" OnKeyUp="fncCal2();" class="form-control" name="heart" placeholder="อัตราการเต้นหัวใจ"></td>
+                                                                <td><input type="text" id="company-column" OnKeyUp="fncCal2();" class="form-control" value="<?php echo $row['heart']; ?>"  name="heart" placeholder="อัตราการเต้นหัวใจ"></td>
                                                                 <td class="text-bold-500">ครั้ง/นาที</td>
                                                                 <td>
-                                                                    <p id="heart"> </p>
-                                                                    <input class="form-check-input" value="1" type="radio" name="result_heart">
-                                                                    <label for="city-column">ปกติ</label>
-                                                                    <input class="form-check-input" value="2" type="radio" name="result_heart">
-                                                                    <label for="city-column">เสี่ยง</label>
-                                                                </td>
+                                                                            <input class="form-check-input" <?php if ($row['result_heart'] == 1) {
+                                                                                                                echo 'checked';
+                                                                                                            } else {
+                                                                                                            } ?> value="1" type="radio" name="result_heart">
+                                                                            <label for="city-column">ปกติ</label>
+                                                                            <input class="form-check-input" <?php if ($row['result_heart'] == 2) {
+                                                                                                                echo 'checked';
+                                                                                                            } else {
+                                                                                                            } ?> value="2" type="radio" name="result_heart">
+                                                                            <label for="city-column">เสี่ยง</label>
+                                                                        </td>
                                                             </tr>
                                                             <thead>
-                                                                <tr>
-                                                                    <th colspan="4" class="text-bold-500">การประเมินองค์ประกอบร่างกาย ( Body composition assessments )</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tr>
-                                                                <td class="text-bold-500">น้ำหนัก</td>
-                                                                <td colspan="2"><input type="text" id="company-column" class="form-control" name="weight" placeholder="น้ำหนัก"></td>
-                                                                <td class="text-bold-500">กก.</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-bold-500">ส่วนสูง</td>
-                                                                <td colspan="2"><input type="text" OnKeyUp="fncCal3();" id="company-column" class="form-control" name="height" placeholder="ส่วนสูง"></td>
-                                                                <td class="text-bold-500">เซ็นติเมตร</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-bold-500">ค่า BMI(ค่าปกติ 18.5-22.9)</td>
-                                                                <td><input type="text" id="company-column" class="form-control" name="BMI" OnKeyUp="fncCal3();" placeholder="ค่า BMI(ค่าปกติ 18.5-22.9)"></td>
-                                                                <td class="text-bold-500"></td>
-                                                                <td>
-                                                                    <p id="bmi"></p>
-                                                                    <input class="form-check-input" value="1" type="radio" name="result_BMI">
-                                                                    <label for="city-column">ต่ำกว่าปกติ</label>
-                                                                    <input class="form-check-input" value="2" type="radio" name="result_BMI">
-                                                                    <label for="city-column">ปกติ</label>
-                                                                    <input class="form-check-input" value="3" type="radio" name="result_BMI">
-                                                                    <label for="city-column">สูงกว่าปกติ</label>
+                                                                        <tr>
+                                                                            <th colspan="4" class="text-bold-500">การประเมินองค์ประกอบร่างกาย ( Body composition assessments )</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tr>
+                                                                        <td class="text-bold-500">น้ำหนัก</td>
+                                                                        <td colspan="2"><input type="text" id="company-column" class="form-control" value="<?php echo $row['weight']; ?>" name="weight" placeholder="น้ำหนัก"></td>
+                                                                        <td class="text-bold-500">กก.</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-bold-500">ส่วนสูง</td>
+                                                                        <td colspan="2"><input type="text"  OnKeyUp="fncCal3();" id="company-column" class="form-control" value="<?php echo $row['height']; ?>" name="height" placeholder="ส่วนสูง"></td>
+                                                                        <td class="text-bold-500">เซ็นติเมตร</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-bold-500">ค่า BMI(ค่าปกติ 18.5-22.9)</td>
+                                                                        <td><input type="text" id="company-column" class="form-control" value="<?php echo $row['BMI']; ?>" name="BMI" placeholder="ค่า BMI(ค่าปกติ 18.5-22.9)"></td>
+                                                                        <td class="text-bold-500">มิลลิเมตรปรอท</td>
+                                                                        <td>
+                                                                            <input class="form-check-input" value="1" <?php if ($row['result_BMI'] == 1) {
+                                                                                                                            echo 'checked';
+                                                                                                                        } else {
+                                                                                                                        } ?> type="radio" name="result_BMI">
+                                                                            <label for="city-column">ต่ำกว่าปกติ</label>
+                                                                            <input class="form-check-input" value="2" <?php if ($row['result_BMI'] == 2) {
+                                                                                                                            echo 'checked';
+                                                                                                                        } else {
+                                                                                                                        } ?> type="radio" name="result_BMI">
+                                                                            <label for="city-column">ปกติ</label>
+                                                                            <input class="form-check-input" value="3" <?php if ($row['result_BMI'] == 3) {
+                                                                                                                            echo 'checked';
+                                                                                                                        } else {
+                                                                                                                        } ?> type="radio" name="result_BMI">
+                                                                            <label for="city-column">สูงกว่าปกติ</label>
 
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-bold-500">เส้นรอบเอว</td>
-                                                                <td><input type="text" id="company-column" OnKeyUp="fncCal4();" class="form-control" OnKeyUp="fncCal4(); "name="waistline" placeholder="เส้นรอบเอว"></td>
-                                                                <td class="text-bold-500">ซม.</td>
-                                                                <td>
-                                                                    <p id="waistline"></p>
-                                                                    <input class="form-check-input" value="1" type="radio" name="result_waistline">
-                                                                    <label for="city-column">ปกติ</label>
-                                                                    <input class="form-check-input" value="2" type="radio" name="result_waistline">
-                                                                    <label for="city-column">เส้นรอบเอวเกิน(อ้วน)</label>
-                                                                </td>
-                                                            </tr>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-bold-500">เส้นรอบเอว</td>
+                                                                        <td><input type="text" id="company-column" OnKeyUp="fncCal4();" class="form-control" value="<?php echo $row['waistline']; ?>" name="waistline" placeholder="เส้นรอบเอว"></td>
+                                                                        <td class="text-bold-500">ซม.</td>
+                                                                        <td>
+                                                                            <input class="form-check-input" value="1" <?php if ($row['result_waistline'] == 1) {
+                                                                                                                            echo 'checked';
+                                                                                                                        } else {
+                                                                                                                        } ?> type="radio" name="result_waistline">
+                                                                            <label for="city-column">ปกติ</label>
+                                                                            <input class="form-check-input" value="2" <?php if ($row['result_waistline'] == 2) {
+                                                                                                                            echo 'checked';
+                                                                                                                        } else {
+                                                                                                                        } ?> type="radio" name="result_waistline">
+                                                                            <label for="city-column">เส้นรอบเอวเกิน(อ้วน)</label>
+                                                                        </td>
+                                                                    </tr>
 
 
-                                                            <!-- การประเมินสมรรถภาพระบบหายใจและหลอดเลือด (Cardio respiratory fitness assessments) -->
-                                                            <thead>
-                                                                <tr>
-                                                                    <th colspan="4" class="text-bold-500">
-                                                                        การประเมินสมรรถภาพระบบหายใจและหลอดเลือด (Cardio respiratory fitness assessments)</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tr>
-                                                                <td class="text-bold-500">เดิน 6 นาที (6 minutes walk)</td>
-                                                                <td><input type="text" id="company-column" OnKeyUp="fncCal5();" class="form-control" OnKeyUp="fncCal2(); "name="walk" placeholder="เดิน 6 นาที"></td>
-                                                                <td class="text-bold-500">เมตร </td>
-                                                                <td>
-                                                                    <p id="walk"></p>
-                                                                    <input class="form-check-input" value="1" type="radio" name="result_walk">
-                                                                    <label for="city-column">ต่ำกว่าเกณฑ์</label>
-                                                                    <input class="form-check-input" value="2" type="radio" name="result_walk">
-                                                                    <label for="city-column">ปกติ</label>
-                                                                    <input class="form-check-input" value="3" type="radio" name="result_walk">
-                                                                    <label for="city-column"> สูงกว่าเกณฑ์</label>
+                                                                    <!-- การประเมินสมรรถภาพระบบหายใจและหลอดเลือด (Cardio respiratory fitness assessments) -->
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th colspan="4" class="text-bold-500">
+                                                                                การประเมินสมรรถภาพระบบหายใจและหลอดเลือด (Cardio respiratory fitness assessments)</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tr>
+                                                                        <td class="text-bold-500">เดิน 6 นาที (6 minutes walk)</td>
+                                                                        <td><input type="text" id="company-column" OnKeyUp="fncCal5();" class="form-control" value="<?php echo $row['walk']; ?>" name="walk" placeholder="เดิน 6 นาที"></td>
+                                                                        <td class="text-bold-500">เมตร </td>
+                                                                        <td>
+                                                                            <input class="form-check-input" value="1" <?php if ($row['result_walk'] == 1) {
+                                                                                                                            echo 'checked';
+                                                                                                                        } else {
+                                                                                                                        } ?> type="radio" name="result_walk">
+                                                                            <label for="city-column">ต่ำกว่าเกณฑ์</label>
+                                                                            <input class="form-check-input" value="2" <?php if ($row['result_walk'] == 2) {
+                                                                                                                            echo 'checked';
+                                                                                                                        } else {
+                                                                                                                        } ?> type="radio" name="result_walk">
+                                                                            <label for="city-column">ปกติ</label>
+                                                                            <input class="form-check-input" value="3" <?php if ($row['result_walk'] == 3) {
+                                                                                                                            echo 'checked';
+                                                                                                                        } else {
+                                                                                                                        } ?> type="radio" name="result_walk">
+                                                                            <label for="city-column"> สูงกว่าเกณฑ์</label>
 
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-bold-500">
-                                                                ดินย่ำเท้า 2 นาที (2 minutes Step in place)</td>
-                                                                <td><input type="text" id="company-column" OnKeyUp="fncCal11();" class="form-control" OnKeyUp="fncCal2();"name="Stepinplace" placeholder="เดินยำก้าว 2 นาที"></td>
-                                                                <td class="text-bold-500">จำนวนก้าว </td>
-                                                                <td>
-                                                                    <p id="Stepinplace"></p>
-                                                                    <input class="form-check-input" value="1" type="radio" name="result_Stepinplace">
-                                                                    <label for="city-column">ต่ำกว่าเกณฑ์</label>
-                                                                    <input class="form-check-input" value="2" type="radio" name="result_Stepinplace">
-                                                                    <label for="city-column">ปกติ</label>
-                                                                    <input class="form-check-input" value="3" type="radio" name="result_Stepinplace">
-                                                                    <label for="city-column"> สูงกว่าเกณฑ์</label>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-bold-500">
+                                                                            เดินยำก้าว 2 นาที (2 minutes Step in place)</td>
+                                                                        <td><input type="text" id="company-column"  OnKeyUp="fncCal11();" class="form-control" value="<?php echo $row['Stepinplace']; ?>" name="Stepinplace" placeholder="เดินยำก้าว 2 นาที"></td>
+                                                                        <td class="text-bold-500">จำนวนก้าว </td>
+                                                                        <td>
+                                                                            <input class="form-check-input" value="1" <?php if ($row['result_Stepinplace'] == 1) {
+                                                                                                                            echo 'checked';
+                                                                                                                        } else {
+                                                                                                                        } ?> type="radio" name="result_Stepinplace">
+                                                                            <label for="city-column">ต่ำกว่าเกณฑ์</label>
+                                                                            <input class="form-check-input" value="2" <?php if ($row['result_Stepinplace'] == 2) {
+                                                                                                                            echo 'checked';
+                                                                                                                        } else {
+                                                                                                                        } ?> type="radio" name="result_Stepinplace">
+                                                                            <label for="city-column">ปกติ</label>
+                                                                            <input class="form-check-input" value="3" <?php if ($row['result_Stepinplace'] == 3) {
+                                                                                                                            echo 'checked';
+                                                                                                                        } else {
+                                                                                                                        } ?> type="radio" name="result_Stepinplace">
+                                                                            <label for="city-column"> สูงกว่าเกณฑ์</label>
 
-                                                                </td>
-                                                            </tr>
+                                                                        </td>
+                                                                    </tr>
 
-                                                            <thead>
-                                                                <tr>
-                                                                    <th colspan="4" class="text-bold-500">การประเมินสมรรถภาพความแข็งแรงของกล้ามเนื้อ (Muscular fitness assessments)</th>
-                                                                </tr>
-                                                            </thead>
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th colspan="4" class="text-bold-500">การประเมินสมรรถภาพความแข็งแรงของกล้ามเนื้อ (Muscular fitness assessments)</th>
+                                                                        </tr>
+                                                                    </thead>
 
-                                                            <tr>
-                                                                <td class="text-bold-500">ลุกยืนจากเก้าอี้ (30-sec Chair stand test)</td>
-                                                                <td><input type="text" id="company-column" class="form-control" name="Chair_stand" OnKeyUp="fncCal6();" placeholder="กยืนจากเก้าอี้ "></td>
-                                                                <td class="text-bold-500">ครั้ง</td>
-                                                                <td>
-                                                                    <input class="form-check-input" value="1" type="radio" name="result_Chair_stand">
-                                                                    <label for="city-column">ต่ำกว่าเกณฑ์</label>
-                                                                    <input class="form-check-input" value="2" type="radio" name="result_Chair_stand">
-                                                                    <label for="city-column">ปกติ</label>
-                                                                    <input class="form-check-input" value="3" type="radio" name="result_Chair_stand">
-                                                                    <label for="city-column"> สูงกว่าเกณฑ์</label>
+                                                                    <tr>
+                                                                        <td class="text-bold-500">ลุกยืนจากเก้าอี้ (30-sec Chair stand test)</td>
+                                                                        <td><input type="text" id="company-column" class="form-control" OnKeyUp="fncCal6();" value="<?php echo $row['Chair_stand']; ?>" name="Chair_stand" placeholder="กยืนจากเก้าอี้ "></td>
+                                                                        <td class="text-bold-500">ครั้ง</td>
+                                                                        <td>
+                                                                            <input class="form-check-input" value="1" type="radio" <?php if ($row['result_Chair_stand'] == 1) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_Chair_stand">
+                                                                            <label for="city-column">ต่ำกว่าเกณฑ์</label>
+                                                                            <input class="form-check-input" value="2" type="radio" <?php if ($row['result_Chair_stand'] == 2) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_Chair_stand">
+                                                                            <label for="city-column">ปกติ</label>
+                                                                            <input class="form-check-input" value="3" type="radio" <?php if ($row['result_Chair_stand'] == 3) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_Chair_stand">
+                                                                            <label for="city-column"> สูงกว่าเกณฑ์</label>
 
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-bold-500">งอแขนพับศอก (Arm Curl test) </td>
-                                                                <td><input type="text" id="company-column"  class="form-control" OnKeyUp="fncCal7();" name="Arm" placeholder="งอแขนพับศอก"></td>
-                                                                <td class="text-bold-500">ครั้ง</td>
-                                                                <td>
-                                                                    <p id="Arm"></p>
-                                                                    <input class="form-check-input" value="1" type="radio" name="result_Arm">
-                                                                    <label for="city-column">ต่ำกว่าเกณฑ์</label>
-                                                                    <input class="form-check-input" value="2" type="radio" name="result_Arm">
-                                                                    <label for="city-column">ปกติ</label>
-                                                                    <input class="form-check-input" value="3" type="radio" name="result_Arm">
-                                                                    <label for="city-column"> สูงกว่าเกณฑ์</label>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-bold-500">งอแขนพับศอก (Arm Curl test) </td>
+                                                                        <td><input type="text" id="company-column" OnKeyUp="fncCal7();" class="form-control" value="<?php echo $row['Arm']; ?>" name="Arm" placeholder="งอแขนพับศอก"></td>
+                                                                        <td class="text-bold-500">ครั้ง</td>
+                                                                        <td>
+                                                                            <input class="form-check-input" value="1" type="radio" <?php if ($row['result_Arm'] == 1) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_Arm">
+                                                                            <label for="city-column">ต่ำกว่าเกณฑ์</label>
+                                                                            <input class="form-check-input" value="2" type="radio" <?php if ($row['result_Arm'] == 2) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_Arm">
+                                                                            <label for="city-column">ปกติ</label>
+                                                                            <input class="form-check-input" value="3" type="radio" <?php if ($row['result_Arm'] == 3) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_Arm">
+                                                                            <label for="city-column"> สูงกว่าเกณฑ์</label>
 
-                                                                </td>
-                                                            </tr>
+                                                                        </td>
+                                                                    </tr>
 
-                                                            <thead>
-                                                                <tr>
-                                                                    <th colspan="4" class="text-bold-500">การประเมินความยืดหยุ่นของกล้ามเนื้อและข้อต่อ (Flexibility assessments)</th>
-                                                                </tr>
-                                                            </thead>
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th colspan="4" class="text-bold-500">การประเมินความยืดหยุ่นของกล้ามเนื้อและข้อต่อ (Flexibility assessments)</th>
+                                                                        </tr>
+                                                                    </thead>
 
-                                                            <tr>
-                                                                <td class="text-bold-500">นั่งเก้าอี้ยื่นแขนแตะปลายเท้า (Sit-and-reach test)</td>
-                                                                <td><input type="text" id="company-column" class="form-control" name="Sit" OnKeyUp="fncCal8();" placeholder="นั่งเก้าอี้ยื่นแขนแตะปลายเท้า"></td>
-                                                                <td class="text-bold-500">นิ้ว</td>
-                                                                <td>
-                                                                    <input class="form-check-input" value="1" type="radio" name="result_Sit">
-                                                                    <label for="city-column">ต่ำกว่าเกณฑ์</label>
-                                                                    <input class="form-check-input" value="2" type="radio" name="result_Sit">
-                                                                    <label for="city-column">ปกติ</label>
-                                                                    <input class="form-check-input" value="3" type="radio" name="result_Sit">
-                                                                    <label for="city-column"> สูงกว่าเกณฑ์</label>
+                                                                    <tr>
+                                                                        <td class="text-bold-500">นั่งเก้าอี้ยื่นแขนแตะปลายเท้า (Sit-and-reach test)</td>
+                                                                        <td><input type="text" id="company-column"  OnKeyUp="fncCal8();" class="form-control" value="<?php echo $row['Sit']; ?>" name="Sit" placeholder="นั่งเก้าอี้ยื่นแขนแตะปลายเท้า"></td>
+                                                                        <td class="text-bold-500">นิ้ว</td>
+                                                                        <td>
+                                                                            <input class="form-check-input" value="1" type="radio" <?php if ($row['result_Sit'] == 1) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_Sit">
+                                                                            <label for="city-column">ต่ำกว่าเกณฑ์</label>
+                                                                            <input class="form-check-input" value="2" type="radio" <?php if ($row['result_Sit'] == 2) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_Sit">
+                                                                            <label for="city-column">ปกติ</label>
+                                                                            <input class="form-check-input" value="3" type="radio" <?php if ($row['result_Sit'] == 3) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_Sit">
+                                                                            <label for="city-column"> สูงกว่าเกณฑ์</label>
 
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-bold-500">การเอื้อมแขนแตะมือด้านหลัง (Back scratch)</td>
-                                                                <td><input type="text" id="company-column" class="form-control" name="Back_scratch" OnKeyUp="fncCal9();" placeholder="การเอื้อมแขนแตะมือด้านหลัง"></td>
-                                                                <td class="text-bold-500">นิ้ว</td>
-                                                                <td>
-                                                                    <input class="form-check-input" value="1" type="radio" name="result_Back_scratch">
-                                                                    <label for="city-column">ต่ำกว่าเกณฑ์</label>
-                                                                    <input class="form-check-input" value="2" type="radio" name="result_Back_scratch">
-                                                                    <label for="city-column">ปกติ</label>
-                                                                    <input class="form-check-input" value="3" type="radio" name="result_Back_scratch">
-                                                                    <label for="city-column"> สูงกว่าเกณฑ์</label>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-bold-500">การเอื้อมแขนแตะมือด้านหลัง (Back scratch)</td>
+                                                                        <td><input type="text" id="company-column"  OnKeyUp="fncCal9();" class="form-control" value="<?php echo $row['Back_scratch']; ?>" name="Back_scratch" placeholder="การเอื้อมแขนแตะมือด้านหลัง"></td>
+                                                                        <td class="text-bold-500">นิ้ว</td>
+                                                                        <td>
+                                                                            <input class="form-check-input" value="1" type="radio" <?php if ($row['result_Back_scratch'] == 1) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_Back_scratch">
+                                                                            <label for="city-column">ต่ำกว่าเกณฑ์</label>
+                                                                            <input class="form-check-input" value="2" type="radio" <?php if ($row['result_Back_scratch'] == 2) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_Back_scratch">
+                                                                            <label for="city-column">ปกติ</label>
+                                                                            <input class="form-check-input" value="3" type="radio" <?php if ($row['result_Back_scratch'] == 3) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_Back_scratch">
+                                                                            <label for="city-column"> สูงกว่าเกณฑ์</label>
 
-                                                                </td>
-                                                            </tr>
-                                                            <thead>
-                                                                <tr>
-                                                                    <th colspan="4" class="text-bold-500">การประเมินการทรงตัวและความว่องไว (Balance and Agility assessments)</th>
-                                                                </tr>
-                                                            </thead>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th colspan="4" class="text-bold-500">การประเมินการทรงตัวและความว่องไว (Balance and Agility assessments)</th>
+                                                                        </tr>
+                                                                    </thead>
 
-                                                            <tr>
-                                                                <td class="text-bold-500">การลุกเดินจากเก้าอี้ไปและกลับ (8-Feet up and go)</td>
-                                                                <td><input type="text" id="company-column" class="form-control" name="up_and_go" OnKeyUp="fncCal10();" placeholder="การลุกเดินจากเก้าอี้ไปและกลับ"></td>
-                                                                <td class="text-bold-500">วินาที</td>
-                                                                <td>
-                                                                    <input class="form-check-input" value="1" type="radio" name="result_up_and_go">
-                                                                    <label for="city-column">ต่ำกว่าเกณฑ์</label>
-                                                                    <input class="form-check-input" value="2" type="radio" name="result_up_and_go">
-                                                                    <label for="city-column">ปกติ</label>
-                                                                    <input class="form-check-input" value="3" type="radio" name="result_up_and_go">
-                                                                    <label for="city-column"> สูงกว่าเกณฑ์</label>
+                                                                    <tr>
+                                                                        <td class="text-bold-500">การลุกเดินจากเก้าอี้ไปและกลับ (8-Feet up and go)</td>
+                                                                        <td><input type="text" id="company-column" OnKeyUp="fncCal10();" class="form-control" value="<?php echo $row['up_and_go']; ?>" name="up_and_go" placeholder="การลุกเดินจากเก้าอี้ไปและกลับ"></td>
+                                                                        <td class="text-bold-500">วินาที</td>
+                                                                        <td>
+                                                                            <input class="form-check-input" value="1" type="radio" <?php if ($row['result_up_and_go'] == 1) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_up_and_go">
+                                                                            <label for="city-column">ต่ำกว่าเกณฑ์</label>
+                                                                            <input class="form-check-input" value="2" type="radio" <?php if ($row['result_up_and_go'] == 2) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_up_and_go">
+                                                                            <label for="city-column">ปกติ</label>
+                                                                            <input class="form-check-input" value="3" type="radio" <?php if ($row['result_up_and_go'] == 3) {
+                                                                                                                                        echo 'checked';
+                                                                                                                                    } else {
+                                                                                                                                    } ?> name="result_up_and_go">
+                                                                            <label for="city-column"> สูงกว่าเกณฑ์</label>
 
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="text-bold-500">ครั้งที่ </td>
-                                                                <td><input type="text" id="company-column" class="form-control" name="NO" placeholder="ครั้งที่"></td>
-                                                                <td class="text-bold-500">ผู้ตรวจ</td>
-                                                                <td><input type="text" id="company-column" class="form-control" name="inspector" placeholder="ผู้ตรวจ"></td>
-                                                            </tr>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-bold-500">ครั้งที่ </td>
+                                                                        <td><input type="text" id="company-column" class="form-control" value="<?php echo $row['NO']; ?>" name="NO" placeholder="ครั้งที่"></td>
+                                                                        <td class="text-bold-500">ผู้ตรวจ</td>
+                                                                        <td><input type="text" id="company-column" class="form-control" value="<?php echo $row['inspector']; ?>" name="inspector" placeholder="ผู้ตรวจ"></td>
+                                                                    </tr>
 
-                                                        </tbody>
+                                                                </tbody>
+                                                            </table>
                                                     </table>
                                                 </div>
                                             </div>
@@ -1730,3 +1858,5 @@
 </html>
 <?php
 mysqli_close($conn);
+                                           }
+                                            }?>
